@@ -3,10 +3,10 @@ from extensions import init_extensions
 def create_app():
     app = Flask(__name__)
 
-# inicializa extensões
+    # inicializa extensões
     init_extensions(app)
 
-# rotas simples
+    # rotas simples
     @app.route("/")
     def home():
         return "Aplicação organizada funcionando"
