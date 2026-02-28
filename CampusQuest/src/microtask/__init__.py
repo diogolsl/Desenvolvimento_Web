@@ -1,8 +1,8 @@
 from flask import Flask 
 from flask import render_template
 
-app = Flask(__name__)
 def create_app():
+    app = Flask(__name__)
 
     from .blueprints.pages import bp as pages_bp
     app.register_blueprint(pages_bp)

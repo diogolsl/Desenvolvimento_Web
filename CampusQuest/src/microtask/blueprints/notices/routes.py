@@ -5,4 +5,4 @@ from . import bp
 @bp.get('/avisos')
 def avisos():
     avisos = [] 
-    return render_template('templates/notices/aviso.html', avisos=avisos)
+    return render_template('notices/aviso.html', avisos=avisos)
