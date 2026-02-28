@@ -3,11 +3,8 @@ from . import bp
 
 @bp.get('/missoes')
 def missoes():
-    missoes = [
-            {
-                'titulo': 'Missão 1: Exploração do Campus',
-                'descricao': 'Explore o campus e encontre pontos de interesse, como bibliotecas, laboratórios e áreas de lazer.',
-                'recompensa': '50 pontos de experiência'
-            }
-        ]
+    missoes = [{ 'id': 1, 'titulo': 'Missão 1', 'descricao': 'Descrição da Missão 1' },
+              { 'id': 2, 'titulo': 'Missão 2', 'descricao': 'Descrição da Missão 2' },
+              { 'id': 3, 'titulo': 'Missão 3', 'descricao': 'Descrição da Missão 3' },
+              { 'id': 4, 'titulo': 'Missão 4', 'descricao': 'Descrição da Missão 4' }]
     return render_template('templates/missions/missoes.html', missoes=missoes)

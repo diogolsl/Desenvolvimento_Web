@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Missões - CampusQuest{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Bem-vindo ao CampusQuest!</h1>
+    <p>Explore as missões disponíveis e desafie-se a aprender algo novo todos os dias!</p>
+    <div class="missions-list">
+        {% for missao in missoes %}
+        <div class="mission-card">
+            <h2>{{ missao.titulo }}</h2>
+            <p>{{ missao.descricao }}</p>
+            <a href="#" class="btn">Participar</a>
+        </div>
+        {% endfor %}
+{% endblock %}
