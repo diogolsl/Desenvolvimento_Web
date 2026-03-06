@@ -1,6 +1,7 @@
-from flask import render_template, abort
+from flask import redirect, render_template, abort, url_for
 from . import bp
-from ...models import list_tickets, get_ticket
+from ...models import list_tickets, get_ticket, update_ticket_status
+from helpdesk import models
 
 @bp.get("/")
 def lista():
@@ -17,3 +18,15 @@ def detalhe(ticket_id):
         ticket=data["ticket"],
         updates=data["updates"]
     )
+
+bp.post("/<int:ticket_id>/close")
+def fechar(ticket_id):
+    models.update_ticket_status(ticket_id, "closed")
+    return redirect(url_for("tickets.detalhe", ticket_id=ticket_id))
+
+bp.post("/<int:ticket_id>/reopen")
+def reabrir(ticket_id):
+    models.update_ticket_status(ticket_id, "open")
+    return redirect(url_for("tickets.detalhe", ticket_id=ticket_id))
+
+

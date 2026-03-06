@@ -67,3 +67,14 @@ def get_ticket(ticket_id: int):
             return None
         updates = conn.execute(sql_updates, {"id": ticket_id}).mappings().all()
         return {"ticket": ticket, "updates": updates}
+
+def update_ticket_status(ticket_id: int, new_status: str):
+    sql = text("""
+        UPDATE tickets
+        SET status = :status
+        WHERE id = :id
+    """)
+    # utilizar begin em operacoes de update
+    with engine.begin() as conn:
+        conn.execute(sql, {"id": ticket_id, "status": new_status})
+        return True
