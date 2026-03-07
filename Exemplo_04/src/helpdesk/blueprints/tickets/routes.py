@@ -19,12 +19,12 @@ def detalhe(ticket_id):
         updates=data["updates"]
     )
 
-bp.post("/<int:ticket_id>/close")
+@bp.post("/<int:ticket_id>/close")
 def fechar(ticket_id):
     models.update_ticket_status(ticket_id, "closed")
     return redirect(url_for("tickets.detalhe", ticket_id=ticket_id))
 
-bp.post("/<int:ticket_id>/reopen")
+@bp.post("/<int:ticket_id>/reopen")
 def reabrir(ticket_id):
     models.update_ticket_status(ticket_id, "open")
     return redirect(url_for("tickets.detalhe", ticket_id=ticket_id))

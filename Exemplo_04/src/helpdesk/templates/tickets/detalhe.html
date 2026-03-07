@@ -6,9 +6,10 @@
 
   <section class="card">
     <h2>{{ ticket.title }}</h2>
+    
     <p class="muted">
-      Status atual : <b>{{ ticket.status }}</b>
-      {if ticket.status == "open" }
+      Status atual: <b>{{ ticket.status }}</b>
+      {% if ticket.status == "open" %}
         <form method="post" action="{{ url_for('tickets.fechar', ticket_id=ticket.id) }}" style="display:inline;">
           <button type="submit" class="btn btn-sm">Fechar</button>
         </form>
@@ -18,6 +19,8 @@
         </form>
       {% endif %}
     </p>
+    
+    <p>
       Prioridade: <b>{{ ticket.priority }}</b>
     </p>
 
