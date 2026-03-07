@@ -1,7 +1,7 @@
 from flask import redirect, render_template, abort, url_for
 from . import bp
 from ...models import list_tickets, get_ticket, update_ticket_status
-from helpdesk import models
+from ... import models
 
 @bp.get("/")
 def lista():
