@@ -1,22 +1,22 @@
 from flask import redirect, render_template, abort, url_for
 from . import bp
-from ...models import list_tickets, get_ticket, update_ticket_status
+from ...models import Ticket
 from ... import models
 
 @bp.get("/")
 def lista():
-    tickets = list_tickets(limit=50)
+    tickets = Ticket.query.limit(50).all()
     return render_template("tickets/lista.html", tickets=tickets)
 
 @bp.get("/<int:ticket_id>")
 def detalhe(ticket_id):
-    data = get_ticket(ticket_id)
-    if not data:
+    ticket = Ticket.query.get(ticket_id)
+    if not ticket:
         abort(404)
     return render_template(
         "tickets/detalhe.html",
-        ticket=data["ticket"],
-        updates=data["updates"]
+        ticket=ticket,
+        updates=ticket.updates
     )
 
 @bp.post("/<int:ticket_id>/close")

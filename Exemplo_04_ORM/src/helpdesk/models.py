@@ -1,80 +1,20 @@
-from sqlalchemy import text
-from .extensions import engine
+from sqlalchemy.sql import func
+from sqlalchemy import Enum
+from .extensions import db
 
-# -----------------------------
-# USERS
-# -----------------------------
-def list_users(limit=50):
-    sql = text("""
-        SELECT id, name, email, role, created_at
-        FROM users
-        ORDER BY created_at DESC
-        LIMIT :limit
-    """)
-    with engine.connect() as conn:
-        return conn.execute(sql, {"limit": limit}).mappings().all()
+class User(db.Model):
+    __tablename__ = "users"
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    role = db.Column(
+        Enum("customer", "agent", name="user_role"), nullable=False, default="customer")
+    created_at = db.Column(db.DateTime, nullable=False, server_default=func.now())
 
-# -----------------------------
-# TICKETS
-# -----------------------------
-def list_tickets(limit=50):
-    sql = text("""
-        SELECT
-          t.id,
-          t.title,
-          t.status,
-          t.priority,
-          t.created_at,
-          u.name AS customer_name,
-          a.name AS agent_name
-        FROM tickets t
-        JOIN users u ON u.id = t.customer_id
-        LEFT JOIN users a ON a.id = t.agent_id
-        ORDER BY t.created_at DESC
-        LIMIT :limit
-    """)
-    with engine.connect() as conn:
-        return conn.execute(sql, {"limit": limit}).mappings().all()
-
-def get_ticket(ticket_id: int):
-    sql_ticket = text("""
-        SELECT
-          t.*,
-          u.name  AS customer_name,
-          u.email AS customer_email,
-          a.name  AS agent_name
-        FROM tickets t
-        JOIN users u ON u.id = t.customer_id
-        LEFT JOIN users a ON a.id = t.agent_id
-        WHERE t.id = :id
-    """)
-
-    sql_updates = text("""
-        SELECT
-          tu.id,
-          tu.message,
-          tu.created_at,
-          au.name AS author_name
-        FROM ticket_updates tu
-        JOIN users au ON au.id = tu.author_id
-        WHERE tu.ticket_id = :id
-        ORDER BY tu.created_at ASC
-    """)
-
-    with engine.connect() as conn:
-        ticket = conn.execute(sql_ticket, {"id": ticket_id}).mappings().first()
-        if not ticket:
-            return None
-        updates = conn.execute(sql_updates, {"id": ticket_id}).mappings().all()
-        return {"ticket": ticket, "updates": updates}
-
-def update_ticket_status(ticket_id: int, new_status: str):
-    sql = text("""
-        UPDATE tickets
-        SET status = :status
-        WHERE id = :id
-    """)
-    # utilizar begin em operacoes de update
-    with engine.begin() as conn:
-        conn.execute(sql, {"id": ticket_id, "status": new_status})
-        return True
+    customer_tickets = db.relationship(
+        "Ticket",
+        foreign_keys="Ticket.customer_id",
+        back_populates="customer",
+        lazy=True
+    )
